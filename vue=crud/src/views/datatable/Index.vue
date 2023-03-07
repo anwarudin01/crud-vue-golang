@@ -17,13 +17,13 @@
             </thead>
             <tbody>
               <tr v-for="(data, index) in datatable" :key="index">
-                <th scope="row">{{ index + 1 }}</th>
+                <th scope="row">{{ data.liter }}</th>
                 <td>{{ data.premium }}</td>
                 <td>{{ data.pertalite }}</td>
                 <td>
                   <div class="btn-group">
                     <router-link :to="{ name: 'datatable.edit', params: { id: data.id } }" class="btn btn-sm btn-outline-info me-3">Edit</router-link>
-                    <button class="btn btn-sm btn-outline-danger">Delete</button>
+                    <button class="btn btn-sm btn-outline-danger" @click.prevent="destroy(data.id, index)">Delete</button>
                   </div>
                 </td>
               </tr>
@@ -60,8 +60,21 @@ export default {
           console.log(err.response);
         });
     });
+
+    function destroy(id, index) {
+      axios
+        .delete(`http://localhost:8080/api/bbm/${id}`)
+        .then(() => {
+          datatable.value.splice(index, 1);
+        })
+        .catch((err) => {
+          console.log(err.response.data);
+        });
+    }
+
     return {
       datatable,
+      destroy,
     };
   },
 };

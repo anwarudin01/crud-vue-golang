@@ -4,4 +4,5 @@ type Bbm struct {
 	Id        int64 `gorm:"primaryKey" json:"id"`
 	Premium   int   `gorm:"type:int" json:"premium"`
 	Pertalite int   `gorm:"type:int" json:"pertalite"`
+	Liter     int   `gorm:"type:int" json:"liter"`
 }

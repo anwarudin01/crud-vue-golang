@@ -7,15 +7,21 @@
         <div class="card rounded shadow">
           <div class="card-header">Tambah Data</div>
           <div class="card-body">
-            <div class="mb-3">
-              <label for="exampleFormControlInput1" class="form-label">Harga Premium</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Rp." />
-            </div>
-            <div class="mb-3">
-              <label for="exampleFormControlInput1" class="form-label">Harga Pertalite</label>
-              <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Rp." />
-            </div>
-            <button class="btn btn-outline-primary">Submit</button>
+            <form @submit.prevent="store()">
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Harga Premium</label>
+                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Rp." v-model="harga.premium" />
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Harga Pertalite</label>
+                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Rp." v-model="harga.pertalite" />
+              </div>
+              <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Jumlah Liter</label>
+                <input type="number" class="form-control" id="exampleFormControlInput1" placeholder="Liter" v-model="harga.liter" />
+              </div>
+              <button class="btn btn-outline-primary">Submit</button>
+            </form>
           </div>
         </div>
       </div>
@@ -24,5 +30,43 @@
 </template>
 
 <script>
-export default {};
+import { reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
+
+export default {
+  setup() {
+    // data binding
+    const harga = reactive({
+      premium: '',
+      pertalite: '',
+      liter: '',
+    });
+
+    const validation = ref([]);
+
+    const router = useRouter();
+
+    // fungsi untuk menyimpan inputan ke database
+    function store() {
+      axios
+        .post('http://localhost:8080/api/bbm', harga)
+        .then(() => {
+          router.push({
+            name: 'datatable.index',
+          });
+        })
+        .catch((err) => {
+          validation.value = err.response.data;
+        });
+    }
+
+    return {
+      harga,
+      validation,
+      router,
+      store,
+    };
+  },
+};
 </script>
